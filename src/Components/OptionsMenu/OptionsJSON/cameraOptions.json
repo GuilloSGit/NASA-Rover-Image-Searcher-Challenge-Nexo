@@ -1,0 +1,11 @@
+[
+  { "value": "FHAZ", "label": "FHAZ" },
+  { "value": "RHAZ", "label": "RHAZ" },
+  { "value": "MAST", "label": "MAST" },
+  { "value": "CHEMCAM", "label": "CHEMCAM" },
+  { "value": "MAHLI", "label": "MAHLI" },
+  { "value": "MARDI", "label": "MARDI" },
+  { "value": "NAVCAM", "label": "NAVCAM" },
+  { "value": "PANCAM", "label": "PANCAM" },
+  { "value": "MINITES", "label": "MINITES" }
+]

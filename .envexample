@@ -1,0 +1,2 @@
+VITE_NASA_API_KEY=# Get an API_KEY in https://api.nasa.gov/
+VITE_NASA_URL_ROVERS=https://api.nasa.gov/mars-photos/api/v1/rovers/
