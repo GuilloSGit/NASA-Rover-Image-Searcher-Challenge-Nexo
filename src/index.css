@@ -102,18 +102,21 @@ ul > li > img {
   object-fit: cover;
 }
 
-@media screen and (max-width: 480px) {
-  ul {
-    gap: 8px;
-    padding: 8px;
+@media screen and (max-width: 1010px) {
+  .options-container {
+    min-width: 33vw;
   }
-  ul > li {
-    width: 95%;
-    height: auto;
-  }
-  ul img {
-    min-width: 0;
+}
 
+@media screen and (max-width: 760px) {
+  .options-container {
+    min-width: 20vw;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .options-container {
+    min-width: 60vw;
   }
 }
 
