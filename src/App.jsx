@@ -151,7 +151,6 @@ function App() {
             <Dropdown.Item onClick={toggleListView}>
               🔍 See saved list
             </Dropdown.Item>
-            <Dropdown.Item>📤 Share this</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>

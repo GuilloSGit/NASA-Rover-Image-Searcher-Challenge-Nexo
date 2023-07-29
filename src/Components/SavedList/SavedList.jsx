@@ -3,6 +3,8 @@ import Table from "react-bootstrap/Table";
 import "../../index.css";
 import { Button } from "react-bootstrap";
 
+const WWW = import.meta.env.VITE_WWWW
+
 function SavedList({ setListVisibility }) {
   const [searches, setSearches] = useState(
     JSON.parse(localStorage.getItem("savedSearches")) || []
@@ -16,11 +18,18 @@ function SavedList({ setListVisibility }) {
 
   const handleDelete = (id) => {
     const updatedSearches = searches.filter((search) => search.id !== id);
-    setSearches(updatedSearches);
     localStorage.setItem("savedSearches", JSON.stringify(updatedSearches));
+    setSearches(updatedSearches);
   };
 
-  const handleShare = () => {};
+  const handleShare = (id) => {
+    const itemToShare = searches.filter((search) => search.id === id);
+    const composedMessage = `I am delighted with what I have just seen on the Internet at ${WWW}.\t
+    I found images${itemToShare[0].rover!=""?` of the rover ${(itemToShare[0].rover).toUpperCase()}`:''} ${itemToShare[0].camera!=""?` taken with the camera ${(itemToShare[0].camera).toUpperCase()}`:''}.\t
+    Come check it out!`
+    const textEncoded = window.encodeURI(composedMessage);
+    window.open(`https://wa.me/?text=${textEncoded}`, '_blank');
+  };
 
   return (
     <div className="list-container">
@@ -43,7 +52,7 @@ function SavedList({ setListVisibility }) {
             </tr>
           </thead>
           <tbody>
-            {savedSearches ? (
+            {savedSearches && savedSearches!="[]" ? (
               savedSearches.map((search) => (
                 <tr key={search.id}>
                   <td>{search.id != "" ? search.id : "-"}</td>
@@ -55,7 +64,7 @@ function SavedList({ setListVisibility }) {
                     <Button
                       type="button"
                       variant="warning"
-                      onClick={handleShare}
+                      onClick={() => handleShare(search.id)}
                     >
                       ✉️ Send
                     </Button>
@@ -72,7 +81,7 @@ function SavedList({ setListVisibility }) {
             ) : (
               <tr>
                 <td>1</td>
-                <td colSpan={4}>No data saved yet</td>
+                <td colSpan={5}>No data saved yet</td>
               </tr>
             )}
           </tbody>
