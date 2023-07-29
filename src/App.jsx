@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./index.css";
 import axios from "axios";
 import { buildQuery } from "./utils/scripts";
@@ -11,17 +11,28 @@ function App() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
-  const [searchData, setSearchData] = useState(null);
+  const [searchData, setSearchData] = useState("");
 
   const IMAGES_PER_PAGE = 25;
+
+  useEffect(() => {
+    const initialSearchData = {
+      rover: "curiosity",
+      camera: "FHAZ",
+      earthDate: "",
+      solDate: "",
+    };
+
+    fetchData(initialSearchData);
+  }, []);
 
   const resetSearch = () => {
     setCurrentPage(1);
   };
 
-  const handleSearch = (searchData) => {
-    setSearchData(searchData);
-    fetchData(searchData);
+  const handleSearch = (data) => {
+    setSearchData(data);
+    fetchData(data);
     resetSearch();
   };
 
@@ -61,9 +72,6 @@ function App() {
           <OptionsMenu onSearch={handleSearch} />
         </div>
         <div className="buttons">
-          {response.length === 0 && (
-            <div>No results with these parameters.</div>
-          )}
           {errorMessage && <p className="error-msg"> {errorMessage} </p>}
           <Button
             onClick={() => setCurrentPage(currentPage - 1)}
@@ -84,6 +92,9 @@ function App() {
           </Button>
         </div>
         <div className="container">
+          {response.length === 0 && (
+            <div>No results with these parameters.</div>
+          )}
           <ul>
             {getCurrentPagePhotos().map((photo) => (
               <li key={photo.id}>

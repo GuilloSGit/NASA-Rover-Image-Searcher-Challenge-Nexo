@@ -1,16 +1,6 @@
 const API_URL = import.meta.env.VITE_NASA_URL_ROVERS;
 const API_KEY = import.meta.env.VITE_NASA_API_KEY;
 
-export function formatDate(inputDate) {
-  const parts = inputDate.split("/"); // parts = ["7", "28", "2023"]
-  const day = parts[1];
-  const month = parts[0];
-  const year = parts[2];
-
-  const formattedDate = `${year}-${month}-${day}`;
-  return formattedDate;
-}
-
 export function buildQuery(queryData) {
   const { rover, camera, earthDate, solDate } = queryData;
 
@@ -19,6 +9,13 @@ export function buildQuery(queryData) {
   // Agregar parámetros de acuerdo a las condiciones
   if (earthDate && earthDate !== "") {
     queryParams.push(`earth_date=${earthDate}`);
+  }
+
+  if (earthDate === "" && solDate === "") {
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 1);
+    const formattedDate = currentDate.toISOString().slice(0, 10);
+    queryParams.push(`earth_date=${formattedDate}`);
   }
 
   if (solDate && solDate !== "") {
