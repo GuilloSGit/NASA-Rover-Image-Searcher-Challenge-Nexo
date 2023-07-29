@@ -7,5 +7,6 @@
   { "value": "MARDI", "label": "MARDI" },
   { "value": "NAVCAM", "label": "NAVCAM" },
   { "value": "PANCAM", "label": "PANCAM" },
-  { "value": "MINITES", "label": "MINITES" }
+  { "value": "MINITES", "label": "MINITES" },
+  { "value": "", "label": "-" }
 ]
