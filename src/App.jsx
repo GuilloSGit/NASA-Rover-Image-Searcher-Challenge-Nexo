@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import axios from "axios";
 import { buildQuery } from "./utils/scripts";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import OptionsMenu from "./Components/OptionsMenu/OptionsMenu";
+import SavedList from "./Components/SavedList/SavedList.jsx";
 
 function App() {
   const [response, setResponse] = useState([]);
@@ -12,19 +14,36 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [searchData, setSearchData] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [listVisibility, setListVisibility] = useState(false);
+  const [nextId, setNextId] = useState(1);
 
+  const isNextButtonDisabled = currentPage >= totalPages;
+  const isPrevButtonDisabled = currentPage <= 1;
   const IMAGES_PER_PAGE = 25;
 
   useEffect(() => {
     const initialSearchData = {
       rover: "curiosity",
-      camera: "FHAZ",
+      camera: "",
       earthDate: "",
       solDate: "",
     };
 
     fetchData(initialSearchData);
   }, []);
+
+  const handleSave = () => {
+    const currentSearch = { ...searchData, id: nextId };
+    const savedSearches = JSON.parse(localStorage.getItem("savedSearches"));
+    if (savedSearches === null) {
+      localStorage.setItem("savedSearches", JSON.stringify([currentSearch]));
+    } else {
+      const newList = [...savedSearches, currentSearch];
+      localStorage.setItem("savedSearches", JSON.stringify(newList));
+    }
+    setNextId((prevId) => prevId + 1);
+  };
 
   const resetSearch = () => {
     setCurrentPage(1);
@@ -38,6 +57,7 @@ function App() {
 
   const fetchData = async (queryData) => {
     try {
+      setLoading(true);
       const { data } = await axios.get(buildQuery(queryData));
       setResponse(data.photos);
       setTotalPages(Math.ceil(data.photos.length / IMAGES_PER_PAGE));
@@ -45,6 +65,10 @@ function App() {
     } catch (error) {
       setErrorMessage("Error fetching NASA API.");
       console.log("Error fetching NASA API: ", error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     }
   };
 
@@ -54,8 +78,9 @@ function App() {
     return response.slice(startIndex, endIndex);
   };
 
-  const isNextButtonDisabled = currentPage >= totalPages;
-  const isPrevButtonDisabled = currentPage <= 1;
+  const toggleListView = () => {
+    setListVisibility(true);
+  };
 
   return (
     <div>
@@ -92,13 +117,18 @@ function App() {
           </Button>
         </div>
         <div className="container">
+          <div>{loading && <div className="spinner">Loading...</div>}</div>
           {response.length === 0 && (
-            <div>No results with these parameters.</div>
+            <div className="no-results-message-container">
+              <p className="no-results-message">
+                No results with these parameters.
+              </p>
+            </div>
           )}
           <ul>
             {getCurrentPagePhotos().map((photo) => (
               <li key={photo.id}>
-                <img
+                <LazyLoadImage
                   src={photo.img_src}
                   alt={photo.camera.full_name}
                   className="image"
@@ -107,6 +137,26 @@ function App() {
             ))}
           </ul>
         </div>
+      </div>
+      <div className="floating-button">
+        <Dropdown>
+          <Dropdown.Toggle variant="danger" id="dropdown-basic">
+            Actions
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            {searchData != "" && (
+              <Dropdown.Item onClick={handleSave}>📝 Save search</Dropdown.Item>
+            )}
+            <Dropdown.Item onClick={toggleListView}>
+              🔍 See saved list
+            </Dropdown.Item>
+            <Dropdown.Item>📤 Share this</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+      <div className="list-container">
+        {listVisibility && <SavedList setListVisibility={setListVisibility} />}
       </div>
     </div>
   );

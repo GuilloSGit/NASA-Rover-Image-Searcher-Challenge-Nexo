@@ -8,9 +8,10 @@ import roverOptions from "./OptionsJSON/roverOptions.json";
 
 function OptionsMenu({ onSearch }) {
   const [rover, setRover] = useState("curiosity");
-  const [camera, setCamera] = useState("FHAZ");
+  const [camera, setCamera] = useState("");
   const [date, setDate] = useState("");
   const [solDate, setSolDate] = useState("");
+  const [searchData, setSearchData] = useState("");
 
   useEffect(() => {
     const currentDate = new Date();
@@ -19,9 +20,17 @@ function OptionsMenu({ onSearch }) {
     setDate(formattedDate);
   }, []);
 
+  useEffect(() => {
+    const savedSearchData = localStorage.getItem("searchData");
+    if (savedSearchData) {
+      const parsedSearchData = JSON.parse(savedSearchData);
+      setSearchData(parsedSearchData);
+    }
+  }, []);
+
   const handleReset = () => {
     setRover("curiosity");
-    setCamera("FHAZ");
+    setCamera("");
     setDate("");
     setSolDate("");
   };
@@ -74,12 +83,12 @@ function OptionsMenu({ onSearch }) {
 
         <div className="camera-options options-container">
           {/* Camera selector */}
-            <Form.Label>Camera:</Form.Label>
+          <Form.Label>Camera:</Form.Label>
           <Form.Control
             as="select"
             value={camera}
             onChange={handleCameraChange}
-            >
+          >
             {cameraOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -90,13 +99,13 @@ function OptionsMenu({ onSearch }) {
 
         <div className="earthdate-options options-container">
           {/* Earth Date selector */}
-            <Form.Label>Earth: {date}</Form.Label>
+          <Form.Label>Earth: {date}</Form.Label>
           <Form.Control type="date" value={date} onChange={handleDateChange} />
         </div>
 
         <div className="soldate-options options-container">
           {/* Sol Date selector */}
-            <Form.Label>Sol date: {solDate}</Form.Label>
+          <Form.Label>Sol date: {solDate}</Form.Label>
           <Form.Control
             type="number"
             value={solDate}
