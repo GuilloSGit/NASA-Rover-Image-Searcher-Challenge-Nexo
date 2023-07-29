@@ -155,7 +155,7 @@ function App() {
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      <div className="list-container">
+      <div>
         {listVisibility && <SavedList setListVisibility={setListVisibility} />}
       </div>
     </div>
